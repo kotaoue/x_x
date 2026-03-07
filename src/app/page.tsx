@@ -10,22 +10,27 @@ export default function Home() {
   const [maxLength, setMaxLength] = useState(140);
   const [chunks, setChunks] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [showMarkers, setShowMarkers] = useState(false);
 
   const handleSplit = () => {
     setChunks(splitText(text, maxLength));
     setCopiedIndex(null);
   };
 
+  const getChunkWithMarker = (chunk: string, index: number) =>
+    showMarkers ? `${chunk}\n[${index + 1}/${chunks.length}]` : chunk;
+
   const handleCopy = async (chunk: string, index: number) => {
+    const content = getChunkWithMarker(chunk, index);
     try {
-      await navigator.clipboard.writeText(chunk);
+      await navigator.clipboard.writeText(content);
       setCopiedIndex(index);
       setTimeout(() => setCopiedIndex(null), 2000);
     } catch {
       // Fallback for browsers that block Clipboard API (e.g. non-HTTPS contexts).
       // document.execCommand is deprecated but widely supported as a fallback.
       const el = document.createElement("textarea");
-      el.value = chunk;
+      el.value = content;
       document.body.appendChild(el);
       el.select();
       document.execCommand("copy");
@@ -73,6 +78,22 @@ export default function Home() {
               ))}
             </select>
           </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="showMarkers"
+              checked={showMarkers}
+              onChange={(e) => setShowMarkers(e.target.checked)}
+              className="rounded"
+              title="Append [current/total] page marker to each chunk"
+            />
+            <label
+              htmlFor="showMarkers"
+              className="text-sm font-medium whitespace-nowrap"
+            >
+              [*/n]
+            </label>
+          </div>
         </section>
 
         {/* Textarea */}
@@ -119,7 +140,9 @@ export default function Home() {
               Split into {chunks.length} {chunks.length === 1 ? "post" : "posts"}
             </h2>
             <div className="space-y-4">
-              {chunks.map((chunk, i) => (
+              {chunks.map((chunk, i) => {
+                const content = getChunkWithMarker(chunk, i);
+                return (
                 <div
                   key={i}
                   className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-[var(--background)]"
@@ -130,16 +153,16 @@ export default function Home() {
                     </span>
                     <span
                       className={`text-xs ${
-                        chunk.length > maxLength
+                        content.length > maxLength
                           ? "text-red-500 font-semibold"
                           : "text-gray-400"
                       }`}
                     >
-                      {chunk.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
+                      {content.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
                     </span>
                   </div>
                   <pre className="whitespace-pre-wrap text-sm font-sans break-words leading-relaxed">
-                    {chunk}
+                    {content}
                   </pre>
                   <button
                     onClick={() => handleCopy(chunk, i)}
@@ -148,7 +171,8 @@ export default function Home() {
                     {copiedIndex === i ? "✓ Copied!" : "Copy"}
                   </button>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
