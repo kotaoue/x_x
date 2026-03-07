@@ -17,10 +17,10 @@ Today I tried making homemade sushi for the first time! It was a total disaster 
 **Output** — split into 2 posts:
 
 ```
-[1/2] Today I tried making homemade sushi for the first time!
+Today I tried making homemade sushi for the first time!
 ```
 ```
-[2/2] It was a total disaster at first. The rice was too sticky and the rolls kept falling apart. But by the end I had something edible!
+It was a total disaster at first. The rice was too sticky and the rolls kept falling apart. But by the end I had something edible!
 ```
 
 ## Demo
