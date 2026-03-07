@@ -44,7 +44,7 @@ export default function Home() {
         <header className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">x_x</h1>
           <p className="text-sm text-gray-500 mt-1">
-            長いテキストを投稿しやすいサイズに分割します
+            Split long text into post-sized chunks at natural break points
           </p>
         </header>
 
@@ -55,7 +55,7 @@ export default function Home() {
               htmlFor="maxLength"
               className="text-sm font-medium whitespace-nowrap"
             >
-              最大文字数
+              Max characters
             </label>
             <select
               id="maxLength"
@@ -68,7 +68,7 @@ export default function Home() {
             >
               {CHAR_LIMIT_OPTIONS.map((opt) => (
                 <option key={opt} value={opt}>
-                  {opt}文字
+                  {opt} chars
                 </option>
               ))}
             </select>
@@ -84,7 +84,7 @@ export default function Home() {
               setChunks([]);
             }}
             rows={8}
-            placeholder="ここにテキストを入力してください..."
+            placeholder="Enter your text here..."
             className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--background)] font-sans text-sm"
           />
           <div
@@ -92,10 +92,10 @@ export default function Home() {
               isOverLimit ? "text-red-500 font-semibold" : "text-gray-400"
             }`}
           >
-            {text.length} 文字
+            {text.length} chars
             {isOverLimit && (
               <span className="ml-1">
-                （最大文字数を超えています — 分割が必要です）
+                (exceeds limit — splitting required)
               </span>
             )}
           </div>
@@ -108,7 +108,7 @@ export default function Home() {
             disabled={!text.trim()}
             className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-5 py-2 rounded-lg transition-colors"
           >
-            分割する
+            Split
           </button>
         </section>
 
@@ -116,7 +116,7 @@ export default function Home() {
         {chunks.length > 0 && (
           <section>
             <h2 className="text-base font-semibold mb-3">
-              {chunks.length} 件に分割されました
+              Split into {chunks.length} {chunks.length === 1 ? "post" : "posts"}
             </h2>
             <div className="space-y-4">
               {chunks.map((chunk, i) => (
@@ -135,7 +135,7 @@ export default function Home() {
                           : "text-gray-400"
                       }`}
                     >
-                      {chunk.length}&nbsp;/&nbsp;{maxLength}&nbsp;文字
+                      {chunk.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
                     </span>
                   </div>
                   <pre className="whitespace-pre-wrap text-sm font-sans break-words leading-relaxed">
@@ -145,7 +145,7 @@ export default function Home() {
                     onClick={() => handleCopy(chunk, i)}
                     className="mt-3 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1 rounded-md transition-colors"
                   >
-                    {copiedIndex === i ? "✓ コピーしました" : "コピー"}
+                    {copiedIndex === i ? "✓ Copied!" : "Copy"}
                   </button>
                 </div>
               ))}
