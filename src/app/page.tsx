@@ -140,7 +140,9 @@ export default function Home() {
               Split into {chunks.length} {chunks.length === 1 ? "post" : "posts"}
             </h2>
             <div className="space-y-4">
-              {chunks.map((chunk, i) => (
+              {chunks.map((chunk, i) => {
+                const content = getChunkWithMarker(chunk, i);
+                return (
                 <div
                   key={i}
                   className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-[var(--background)]"
@@ -151,16 +153,16 @@ export default function Home() {
                     </span>
                     <span
                       className={`text-xs ${
-                        chunk.length > maxLength
+                        content.length > maxLength
                           ? "text-red-500 font-semibold"
                           : "text-gray-400"
                       }`}
                     >
-                      {chunk.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
+                      {content.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
                     </span>
                   </div>
                   <pre className="whitespace-pre-wrap text-sm font-sans break-words leading-relaxed">
-                    {getChunkWithMarker(chunk, i)}
+                    {content}
                   </pre>
                   <button
                     onClick={() => handleCopy(chunk, i)}
@@ -169,7 +171,8 @@ export default function Home() {
                     {copiedIndex === i ? "✓ Copied!" : "Copy"}
                   </button>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
