@@ -10,22 +10,27 @@ export default function Home() {
   const [maxLength, setMaxLength] = useState(140);
   const [chunks, setChunks] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [showMarkers, setShowMarkers] = useState(false);
 
   const handleSplit = () => {
     setChunks(splitText(text, maxLength));
     setCopiedIndex(null);
   };
 
+  const getChunkWithMarker = (chunk: string, index: number) =>
+    showMarkers ? `${chunk}\n[${index + 1}/${chunks.length}]` : chunk;
+
   const handleCopy = async (chunk: string, index: number) => {
+    const content = getChunkWithMarker(chunk, index);
     try {
-      await navigator.clipboard.writeText(chunk);
+      await navigator.clipboard.writeText(content);
       setCopiedIndex(index);
       setTimeout(() => setCopiedIndex(null), 2000);
     } catch {
       // Fallback for browsers that block Clipboard API (e.g. non-HTTPS contexts).
       // document.execCommand is deprecated but widely supported as a fallback.
       const el = document.createElement("textarea");
-      el.value = chunk;
+      el.value = content;
       document.body.appendChild(el);
       el.select();
       document.execCommand("copy");
@@ -72,6 +77,22 @@ export default function Home() {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="showMarkers"
+              checked={showMarkers}
+              onChange={(e) => setShowMarkers(e.target.checked)}
+              className="rounded"
+              title="Append [current/total] page marker to each chunk"
+            />
+            <label
+              htmlFor="showMarkers"
+              className="text-sm font-medium whitespace-nowrap"
+            >
+              [*/n]
+            </label>
           </div>
         </section>
 
@@ -139,7 +160,7 @@ export default function Home() {
                     </span>
                   </div>
                   <pre className="whitespace-pre-wrap text-sm font-sans break-words leading-relaxed">
-                    {chunk}
+                    {getChunkWithMarker(chunk, i)}
                   </pre>
                   <button
                     onClick={() => handleCopy(chunk, i)}
