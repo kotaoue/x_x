@@ -113,6 +113,27 @@ test("all output chunks are within maxLength", () => {
   }
 });
 
+// --- marker-aware splitting: chunks must fit within limit after marker is appended ---
+
+test("ensures each chunk plus its marker stays within maxLength", () => {
+  // These two lines together (with the \n between them) are exactly 140 chars.
+  // Without marker adjustment they form a single 140-char chunk; appending
+  // \n[5/7] (6 chars) would push the post to 146 chars — over the 140 limit.
+  const line1 =
+    "そして、この文章もVSCCodeで書いてるけど、その時のcopilotに引っ張られた文体になっている。";
+  const line2 =
+    "てな感じで、そもそもAIへの指示書を書く際にもAIのフォローをするのであれば、書くという行為自体にAIが介在するから、書くのではなくAIとともに脳内を整理していくといった感覚。";
+  const text = `${line1}\n${line2}`;
+  assert.equal(text.length, 140); // confirm the boundary condition
+
+  // Splitting at effective max (140 - len("\n[2/2]") = 135) must yield two chunks
+  const markerLen = "\n[2/2]".length; // 6
+  const result = splitText(text, 140 - markerLen);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], line1);
+  assert.equal(result[1], line2);
+});
+
 // --- round-trip: no characters lost (ignoring inter-chunk whitespace trimming) ---
 
 test("joining chunks reproduces the original text (no lost non-whitespace characters)", () => {
