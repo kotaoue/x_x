@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { splitText } from "@/lib/splitText";
+import { CheckIcon, ClipboardIcon } from "@/components/icons";
 
 const CHAR_LIMIT_OPTIONS = [140, 280, 500, 1000];
 
@@ -151,25 +152,40 @@ export default function Home() {
                     <span className="text-xs text-gray-400">
                       {i + 1}&nbsp;/&nbsp;{chunks.length}
                     </span>
-                    <span
-                      className={`text-xs ${
-                        content.length > maxLength
-                          ? "text-red-500 font-semibold"
-                          : "text-gray-400"
-                      }`}
-                    >
-                      {content.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs ${
+                          content.length > maxLength
+                            ? "text-red-500 font-semibold"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {content.length}&nbsp;/&nbsp;{maxLength}&nbsp;chars
+                      </span>
+                      <button
+                        onClick={() => handleCopy(chunk, i)}
+                        title={copiedIndex === i ? "Copied!" : "Copy to clipboard"}
+                        aria-label={copiedIndex === i ? "Copied!" : "Copy to clipboard"}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                      >
+                        {copiedIndex === i ? <CheckIcon /> : <ClipboardIcon />}
+                      </button>
+                    </div>
                   </div>
-                  <pre className="whitespace-pre-wrap text-sm font-sans break-words leading-relaxed">
+                  <pre
+                    className="whitespace-pre-wrap text-sm font-sans break-words leading-relaxed cursor-text select-text"
+                    onDoubleClick={(e) => {
+                      const selection = window.getSelection();
+                      if (selection) {
+                        const range = document.createRange();
+                        range.selectNodeContents(e.currentTarget);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                      }
+                    }}
+                  >
                     {content}
                   </pre>
-                  <button
-                    onClick={() => handleCopy(chunk, i)}
-                    className="mt-3 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1 rounded-md transition-colors"
-                  >
-                    {copiedIndex === i ? "✓ Copied!" : "Copy"}
-                  </button>
                 </div>
                 );
               })}
