@@ -13,8 +13,31 @@ export default function Home() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [showMarkers, setShowMarkers] = useState(false);
 
+  // Max iterations for marker-length convergence. Chunk count can only increase
+  // as the effective limit shrinks, so convergence is guaranteed; a small bound
+  // guards against any unforeseen edge case.
+  const MAX_MARKER_ITERATIONS = 10;
+
   const handleSplit = () => {
-    setChunks(splitText(text, maxLength));
+    if (showMarkers) {
+      // Iteratively reduce the effective limit so that chunk + marker fits within
+      // maxLength. The marker is \n[n/total], so the worst-case length is
+      // \n[total/total]. The total may change when we shrink the limit, so we
+      // repeat until the chunk count stabilises (converges in at most a few steps).
+      let result = splitText(text, maxLength);
+      for (let iter = 0; iter < MAX_MARKER_ITERATIONS; iter++) {
+        const markerLen = `\n[${result.length}/${result.length}]`.length;
+        const next = splitText(text, maxLength - markerLen);
+        if (next.length === result.length) {
+          result = next;
+          break;
+        }
+        result = next;
+      }
+      setChunks(result);
+    } else {
+      setChunks(splitText(text, maxLength));
+    }
     setCopiedIndex(null);
   };
 
