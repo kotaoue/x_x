@@ -1,0 +1,14 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # GitHub Actions の自動更新
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # npm パッケージの自動更新
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
