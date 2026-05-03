@@ -8,7 +8,7 @@ Got more to say than the character limit allows? Paste your text, pick a limit, 
 
 ## Demo
 
-Try it live at **[https://xx-six-phi.vercel.app/](https://xx-six-phi.vercel.app/)** — no installation needed.
+Try it live at **[https://x-x.oue.me/](https://x-x.oue.me/)** — no installation needed.
 
 ![x_x demo screenshot](docs/demo.png)
 
@@ -16,15 +16,16 @@ Try it live at **[https://xx-six-phi.vercel.app/](https://xx-six-phi.vercel.app/
 
 **Input** (limit: 140 chars):
 
-```
+```text
 Today I tried making homemade sushi for the first time! It was a total disaster at first. The rice was too sticky and the rolls kept falling apart. But by the end I had something edible!
 ```
 
 **Output** — split into 2 posts:
 
-```
+```text
 Today I tried making homemade sushi for the first time!
 ```
-```
+
+```text
 It was a total disaster at first. The rice was too sticky and the rolls kept falling apart. But by the end I had something edible!
 ```
