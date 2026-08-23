@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { splitText } from "./splitText.ts";
+import { splitText } from "./splitText";
 
 // --- empty / whitespace ---
 
